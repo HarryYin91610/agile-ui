@@ -5,7 +5,7 @@ import App from './app.vue'
 import demoBlock from '@/components/demo-block/index.vue'
 import AgileButton from '../packages/agile-button'
 import AgileToast from '../packages/agile-toast'
-import AgileInfoIcon from '../packages/agile-info-icon'
+import AgilePopup from '../packages/agile-popup'
 
 // Styles
 import './style/index.styl'
@@ -17,7 +17,7 @@ Vue.config.productionTip = false
 Vue.component('demo-block', demoBlock)
 Vue.use(AgileButton)
 Vue.use(AgileToast)
-Vue.use(AgileInfoIcon)
+Vue.use(AgilePopup)
 
 new Vue({
   router,
