@@ -52,6 +52,9 @@ transition(name="agilepop", appear, appear-active-class="agilepop-appear-active"
   position fixed
   top 0
   left 0
+  display flex
+  justify-content center 
+  align-items center
   width 100%
   height 100%
   text-align center
@@ -67,11 +70,7 @@ transition(name="agilepop", appear, appear-active-class="agilepop-appear-active"
     animation agile-mask-show 0.25s linear both 1
     animation-delay 0.35s
   .popup-content-wrap
-    position absolute
-    top 50%
-    left 50%
-    transform translate(-50%, -50%)
-    transform translate3d(-50%, -50%, 0)
+    position relative
     text-align center
     .child-wrap
       position relative

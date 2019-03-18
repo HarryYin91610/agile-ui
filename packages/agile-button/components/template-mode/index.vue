@@ -10,7 +10,7 @@ div.agile-button-wrap(
     :style="customBg ? {backgroundImage: `url(${customBg})`} : null"
   )
 
-  div.text-wrap(:style="{color: textColor}")
+  div.text-wrap(:style="textColor ? {color: textColor} : null")
     | {{ content }}
 
 </template>
@@ -41,7 +41,6 @@ div.agile-button-wrap(
     &:last-child 
       margin-right 0
   &.disabled
-    opacity 0.5
     cursor not-allowed 
 
   .custom-bg-wrap
@@ -123,12 +122,12 @@ export default {
     textColor () {
       if (!this.text) { return '#ffffff' }
       if (this.disabled) {
-        return this.text.disabled
+        return this.text.disabled ? this.text.disabled : this.text.normal
       }
-      if (this.isActive) {
+      if (this.isActive && this.text.active) {
         return this.text.active
       }
-      if (this.isHover) {
+      if (this.isHover && this.text.hover) {
         return this.text.hover
       }
       return this.text.normal
@@ -136,29 +135,32 @@ export default {
     customBg () {
       if (!this.background) { return '' }
       if (this.disabled) {
-        return this.background.disabled
+        return this.background.disabled ? this.background.disabled : this.background.normal
       }
-      if (this.isActive) {
+      if (this.isActive && this.background.active) {
         return this.background.active
       }
-      if (this.isHover) {
+      if (this.isHover && this.background.hover) {
         return this.background.hover
       }
       return this.background.normal
     },
     defaultStyle () {
-      let size = {
+      let obj = {
         width: '0px',
         height: '0px'
       }
       if (this.width > 0) {
-        size.width = `${this.width}px`
+        obj.width = `${this.width}px`
       }
       if (this.height > 0) {
-        size.height = `${this.height}px`
-        size.lineHeight = `${this.height}px`
+        obj.height = `${this.height}px`
+        obj.lineHeight = `${this.height}px`
       }
-      return size
+      if (this.type === 'normal' && this.customBg) {
+        obj.backgroundColor = this.customBg
+      }
+      return obj
     },
     syncStyle () {
       return Object.assign(this.defaultStyle, this.userStyle)
