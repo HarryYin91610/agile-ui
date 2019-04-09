@@ -7,7 +7,7 @@ transition(name="agilepop", appear, appear-active-class="agilepop-appear-active"
     div.popup-content-wrap(:style="{width: `${width}px`, background: background.type === 'color' ? background.color : 'none'}", ref="agilepop")
       div.background-wrap(v-if="background.type === 'image' ")
         div.background-top.bg-img-center(:style="{height: `${bgTop.height}px`, backgroundImage: `url(${bgTop.src})`}")
-        div.background-mid(:style="{backgroundImage: `url(${bgMid.src})`}")
+        div.background-mid(:style="popMidFill")
         div.background-bottom.bg-img-center(:style="{height: `${bgBottom.height}px`, backgroundImage: `url(${bgBottom.src})`}")
 
       div.close-wrapper(
@@ -98,6 +98,7 @@ transition(name="agilepop", appear, appear-active-class="agilepop-appear-active"
       position absolute
       right 13px
       top 13px
+      box-sizing border-box
       cursor pointer
       transition all 0.15s
       z-index 2001
@@ -148,7 +149,8 @@ export default {
         src: ''
       },
       bgMid: {
-        src: ''
+        src: '',
+        color: ''
       },
       // 关闭按钮配置
       close: {
@@ -167,11 +169,17 @@ export default {
           right: 13,
           top: 13,
           size: 20,
-          color: 'none'
+          color: 'none',
+          isRound: true,
+          border: {
+            show: false,
+            width: 1,
+            color: ''
+          }
         }
       },
       // 子组件数据
-      innerData: {}
+      innerData: null
     }
   },
   methods: {
@@ -185,6 +193,19 @@ export default {
     }
   },
   computed: {
+    popMidFill () {
+      if (this.bgMid.src) {
+        return {
+          backgroundImage: `url(${this.bgMid.src})`
+        }
+      }
+      if (this.bgMid.color) {
+        return {
+          backgroundColor: this.bgMid.color
+        }
+      }
+      return null
+    },
     curComponent () {
       if (this.component) {
         Vue.component(this.componentName, this.component)
@@ -202,6 +223,8 @@ export default {
     },
     outerStyle () {
       return {
+        border: this.close.outer.border.show ? `${this.close.outer.border.width}px solid ${this.close.outer.border.color}` : 'none',
+        borderRadius: this.close.outer.isRound ? '50%' : 0,
         width: `${this.close.outer.size}px`, height: `${this.close.outer.size}px`,
         right: `${this.close.outer.right}px`, top: `${this.close.outer.top}px`,
         background: this.close.outer.color

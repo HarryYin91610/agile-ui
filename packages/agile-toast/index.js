@@ -1,7 +1,5 @@
-import ToastFunc from './components/function-mode/index'
+import AgileToast from './components/function-mode/index'
 
-export default {
-  install (Vue, options) {
-    Vue.prototype.$agileToast = ToastFunc.creator
-  }
+export default AgileToast.install = (Vue) => {
+  Vue.prototype.$agileToast = AgileToast.creator
 }

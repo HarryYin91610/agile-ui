@@ -1,7 +1,7 @@
-import ButtonTemplate from './components/template-mode/index.vue'
+import AgileButton from './components/template-mode/index.vue'
 
-export default {
-  install (Vue, options) {
-    Vue.component(ButtonTemplate.name, ButtonTemplate)
-  }
+AgileButton.install = (Vue) => {
+  Vue.component(AgileButton.name, AgileButton)
 }
+
+export default AgileButton

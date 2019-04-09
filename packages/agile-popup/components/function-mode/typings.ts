@@ -22,6 +22,10 @@ interface IPopupSetting {
   close?: object
 
   innerData?: object
+
+  component?: object
+
+  componentName?: string
 }
 
 export {

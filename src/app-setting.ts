@@ -30,6 +30,11 @@ export const appSetting = {
       path: 'compo',
       children: [
         {
+          chn: '布局',
+          en: 'Layout',
+          path: 'layout'
+        },
+        {
           chn: '按钮',
           en: 'Button',
           path: 'button'

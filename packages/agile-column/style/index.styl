@@ -1,0 +1,37 @@
+$sm = 768px
+$md = 992px
+$lg = 1200px
+$xl = 1920px
+
+getResStyle($size)
+  for num in (1..24)
+    .agile-col-{$size}-{num}
+      flex 0 0 (num/24)*100*1% !important
+    .agile-col-{$size}-offset-{num}
+      margin-left (num/24)*100*1% !important
+
+setResponsive($size, $min, $max)
+  if $size == 'xs'
+    @media screen and (max-width $max)
+      getResStyle($size)
+  else if $size == 'xl'
+    @media screen and (min-width $min)
+      getResStyle($size)
+  else 
+    @media screen and (min-width $min) and (max-width $max)
+      getResStyle($size)
+
+.agile-col
+  flex 1
+  box-sizing border-box
+  for num in (1..24)
+    &.agile-col-{num}
+      flex 0 0 (num/24)*100*1%
+    &.agile-col-offset-{num}
+      margin-left (num/24)*100*1%
+
+setResponsive('xs', 0, $sm)
+setResponsive('sm', $sm, $md)
+setResponsive('md', $md, $lg)
+setResponsive('lg', $lg, $xl)
+setResponsive('xl', $xl, 0)

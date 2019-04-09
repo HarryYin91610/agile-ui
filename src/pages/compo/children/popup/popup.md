@@ -338,11 +338,12 @@ export default {
 | background | 配置弹框背景 | { type: String, color: String } | type: color / image | { type: “color”, color: “#1E90FF” } |
 | bgTop | 配置背景图片顶部（background.type为“image”时才生效） | { height: Number, src: String } | — | { height: 50, src: “” } |
 | bgBottom | 配置背景图片底部（background.type为“image”时才生效） | { height: Number, src: String } | — | { height: 50, src: “” } |
-| bgMid | 配置背景图片中间平铺的部分（background.type为“image”时才生效） | { src: String } | — | { src: “” } |
+| bgMid | 配置背景图片中间平铺的部分（background.type为“image”时才生效），优先填充图片，若src为空则填充color | { src: String, color: Sting } | — | { src: “”, color: ”“ } |
 | close | 配置关闭按钮 | { show: Boolean, inner: Object, outer: Object } | — | { show: true } |
 | close.inner | 配置关闭按钮内部X部分 | { size: Number, lineWidth: Number, color: Object } | — | { size: 20, lineWidth: 6 } |
 | close.inner.color | 配置X部分的颜色（包括常态和hover态） | { normal: String, hover: String } | — | { normal: “#ffffff”, hover: “#ffffff” } |
-| close.outer | 配置关闭按钮外部 | { right: Number, top: Number, size: Number, color: String } | — | { right: 13, top: 13, size: 20, color: “none” } |
+| close.outer | 配置关闭按钮外部 | { right: Number, top: Number, size: Number, color: String, isRound: Boolean, border: Object } | — | { right: 13, top: 13, size: 20, color: “none”, isRound: true } |
+| close.outer.border | 配置关闭按钮外部描边 | { show: Boolean, width: Number, color: String } | — | { show: false, width: 1, color: ”“ } |
 | component | 插入的子组件 | vue组件实例 | — | — |
 | componentName | 插入的子组件名 | String | — | — |
 | innerData | 传给子组件的同名属性 | Object | — | — |

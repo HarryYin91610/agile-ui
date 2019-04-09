@@ -1,8 +1,5 @@
-import AgilePopupFunc from './components/function-mode/index.js'
+import AgilePopup from './components/function-mode/index.js'
 
-export default {
-  install (Vue, options) {
-    Vue.component(AgilePopupFunc.name, AgilePopupFunc)
-    Vue.prototype.$agilePopup = AgilePopupFunc.creator
-  }
+export default AgilePopup.install = (Vue) => {
+  Vue.prototype.$agilePopup = AgilePopup.creator
 }
