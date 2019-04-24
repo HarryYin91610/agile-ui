@@ -8,6 +8,8 @@ import AgileToast from '../packages/agile-toast'
 import AgilePopup from '../packages/agile-popup'
 import AgileRow from '../packages/agile-row'
 import AgileColumn from '../packages/agile-column'
+import AgileCarousel from '../packages/agile-carousel'
+import AgileSidebar from '../packages/agile-sidebar'
 
 // Styles
 import './style/index.styl'
@@ -22,6 +24,8 @@ Vue.use(AgileToast)
 Vue.use(AgilePopup)
 Vue.use(AgileRow)
 Vue.use(AgileColumn)
+Vue.use(AgileCarousel)
+Vue.use(AgileSidebar)
 
 new Vue({
   router,

@@ -126,7 +126,7 @@ export default {
 ### Options
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
-| timeout | 指定toast显示多少时间后消失 | Number | — | 0 |
+| timeout | 指定toast显示多少时间（ms）后消失 | Number | — | 0 |
 | content | 可插入的文本或html内容 | String | — | — |
 | parentNode | 指定toast位置的参照元素 | Dom | — | — |
 | offset | 指定toast相对于parentNode偏移的位置。x>0: 向右偏移, x<0: 向左偏移。y>0: 向下偏移, y<0: 向上偏移。 | { x: Number, y: Number } | — | { x: 0, y: 0 } |

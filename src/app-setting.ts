@@ -50,6 +50,16 @@ export const appSetting = {
           path: 'popup'
         },
         {
+          chn: '轮播',
+          en: 'Carousel',
+          path: 'carousel'
+        },
+        {
+          chn: '侧边栏',
+          en: 'Sidebar',
+          path: 'sidebar'
+        },
+        {
           chn: '加载器',
           en: 'Loader',
           path: 'loader'
