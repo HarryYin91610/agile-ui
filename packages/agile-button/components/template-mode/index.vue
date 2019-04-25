@@ -1,6 +1,6 @@
 <template lang="pug">
 div.agile-button-wrap(
-  :class="[type, {disabled: disabled, inline: inline, hover: isHover, active: isActive}]", 
+  :class="[type, {disabled: disabled, inline: inline, hover: isHover, active: active || isActive}]", 
   :style="syncStyle",
   @mouseenter="isHover = true", @mouseleave="isHover = false",
   @mousedown="isActive = true", @mouseup="isActive = false"
@@ -76,6 +76,10 @@ export default {
       type: Boolean,
       default: false
     },
+    active: {
+      type: Boolean,
+      default: false
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -124,7 +128,7 @@ export default {
       if (this.disabled) {
         return this.text.disabled ? this.text.disabled : this.text.normal
       }
-      if (this.isActive && this.text.active) {
+      if ((this.active || this.isActive) && this.text.active) {
         return this.text.active
       }
       if (this.isHover && this.text.hover) {
@@ -137,7 +141,7 @@ export default {
       if (this.disabled) {
         return this.background.disabled ? this.background.disabled : this.background.normal
       }
-      if (this.isActive && this.background.active) {
+      if ((this.active || this.isActive) && this.background.active) {
         return this.background.active
       }
       if (this.isHover && this.background.hover) {

@@ -8,23 +8,48 @@ import navSetting from './const/navbar-setting'
 export default {
   data () {
     return {
-      navSetting
+      mode: 'normal', // normal or advanced
+      navSetting,
+      text: {
+        normal: '#ffffff',
+        hover: '#ffffff',
+        active: '#1E90FF'
+      },
+      background: {
+        normal: '#1E90FF',
+        hover: '#00BFFF',
+        active: '#B0E2FF'
+      }
+    }
+  },
+  methods: {
+    onClick (target) {
+      if (this.mode === target) { return }
+      this.mode = target
     }
   }
 }
 </script>
 
-### 基础用法
+### 高级定制化用法
 
 :::demo
 ```html
-<agile-sidebar :setting="navSetting.setting" :body="navSetting.body" :item="navSetting.item"
+<div class="button-wrap" style="text-align: center;">
+  <agile-button content="基本模式" :text="text" :background="background" :active="mode === 'normal'" :user-style="{marginRight: '60px'}" @click.native="onClick('normal')" inline></agile-button>
+  <agile-button content="高级模式" :text="text" :background="background" :active="mode === 'advanced'" @click.native="onClick('advanced')" inline></agile-button>
+</div>
+
+<agile-sidebar v-if="mode === 'normal'" :setting="navSetting.setting"></agile-sidebar>
+<agile-sidebar v-if="mode === 'advanced'" :mode="'advanced'" :setting="navSetting.setting" :body="navSetting.body" :item="navSetting.item"
   :to-top="navSetting.toTop" :close="navSetting.close"></agile-sidebar>
 
-<section v-for="(sec, index) in navSetting.setting" class="nav-section" :id="sec.id" :key="`sec-${index+1}`">{{ sec.text }}</section>
+<section v-for="(sec, index) in navSetting.setting" class="nav-section" :id="sec.id" :key="`sec-${index+1}`">
+  {{ sec.text }}
+</section>
 
 <script>
-// navbar-setting.js内容如下
+/* 必须传入的参数 */
 
 const setting = [
   {
@@ -52,6 +77,8 @@ const setting = [
     id: 'info-section'
   }
 ]
+
+/* 可选：高级模式相关配置（mode为advanced才生效） */
 
 const body = {
   mode: 'image',
@@ -100,7 +127,7 @@ const close = {
   }
 }
 
-export default {
+const navSetting = {
   setting,
   body,
   item,
@@ -110,5 +137,13 @@ export default {
 </script>
 ```
 :::
+
+### Required Options
+| 参数      | 说明          | 类型      | 可选值                           | 默认值  |
+|---------- |-------------- |---------------- |--------------------------------  |-------- |
+| setting | 设置导航内容（必传参数） | Array | — | 空数组 |
+| setting内的子元素 | 设置每个锚点对应Dom的id和文案 | { text: String, id: String } | — | — |
+| mode | 模式 | String | ”normal“ / ”advanced“ | ”normal“ |
+
 
 

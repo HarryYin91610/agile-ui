@@ -40,6 +40,9 @@ const item = {
     normal: '#525252',
     active: '#f89c2d'
   },
+  arrow: {
+    color: '#f89c2d'
+  },
   height: 50
 }
 

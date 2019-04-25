@@ -153,6 +153,7 @@ export default {
 | content | 按钮文案 | String | — | 默认文案 |
 | inline | 设置为“true”可以让按钮为行内元素 | Boolean | true / false | false |
 | disabled | 设置为“true”可以让按钮为禁用态 | Boolean | true / false | false |
+| active | 设置为“true”可以让按钮为选中态 | Boolean | true / false | false |
 | width | 设置按钮宽度（如果设置了行内样式，会被覆盖） | Number | — | 147 |
 | height | 设置按钮高度（如果设置了行内样式，会被覆盖） | Number | — | 40 |
 | text | 设置按钮文案在常态、hover、active、disabled时的颜色 | { normal: “”, hover: “”, active: “”, disabled: “” } | — | — |

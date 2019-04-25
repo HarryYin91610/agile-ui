@@ -7,51 +7,68 @@ div.nav-item(
   @click="scrollTo"
 )
   | {{ setting.text }}
+  span.arrow.left(v-if="arrowShow", :style="arrowStyle")
+  span.arrow.right(v-if="arrowShow", :style="arrowStyle")
 
 </template>
 
 <style lang="stylus" scoped> 
+$height = 50px
+
 .nav-item
   position relative
   width 100% 
+  height $height
+  line-height $height
   text-align center
+  color #87CEFA	
   transition all 0.15s
   cursor pointer
   overflow hidden
-  // &:before, &:after 
-  //   position absolute 
-  //   top 15px
-  //   content ''
-  //   width 0
-  //   height 0 
-  //   border 10px solid transparent
-  //   border-left-color #ffc13b
-  //   transition all 0.35s
-  //   opacity 0
-  // &:before 
-  //   left 12px
-  //   transform translate(-20px, 0)
-  // &:after 
-  //   right 12px
-  //   transform translate(20px, 0) scaleX(-1)
-  // &:hover 
-  //   color #f89c2d
-  // &.active 
-  //   color #f89c2d
-  //   &:before
-  //     transform translate(0, 0)
-  //     opacity 1
-  //   &:after 
-  //     transform translate(0, 0) scaleX(-1)
-  //     opacity 1
+  .arrow
+    position absolute 
+    top 15px
+    display block
+    width 0
+    height 0 
+    border 10px solid transparent
+    border-left-color #ffffff
+    transition all 0.35s
+    opacity 0
+    &.left 
+      left 12px
+      transform translate(-20px, 0)
+    &.right 
+      right 12px
+      transform translate(20px, 0) scaleX(-1)
+  &:hover 
+    color #ffffff
+  &.active 
+    color #ffffff
+    .left
+      transform translate(0, 0)
+      opacity 1
+    .right
+      transform translate(0, 0) scaleX(-1)
+      opacity 1
       
 </style>
 
 <script>
 import { moveScreenTo } from '../lib/scroll'
 
+// 默认样式
+const initHeight = 50
+const initfontSize = 16
+const initColor1 = '#696969'
+const initColor2 = '#ffffff'
+
 export default {
   props: {
+    mode: {
+      type: String,
+      default: 'normal'
+    },
     curPos: {
       type: Number,
       required: true,
@@ -84,13 +101,16 @@ export default {
     },
     custom: {
       type: Object,
-      required: true,
       default () {
         return {
           font: {
             size: 0,
             normal: '',
             active: ''
+          },
+          arrow: {
+            show: true,
+            color: ''
           },
           height: 0
         }
@@ -114,9 +134,9 @@ export default {
   },
   computed: {
     itemColor () {
-      if (this.custom && this.custom.font) {
-        const normal = this.custom.font.normal || '#696969'
-        const active = this.custom.font.active || '#ffffff'
+      if (this.mode === 'advanced' && this.custom && this.custom.font) {
+        const normal = this.custom.font.normal || initColor1
+        const active = this.custom.font.active || initColor2
         return {
           color: this.hover === this.index || this.curPos === this.index ? active : normal
         }
@@ -125,11 +145,11 @@ export default {
       }
     },
     itemStyle () {
-      if (this.custom) {
-        const height = `${this.custom.height || 50}px`
+      if (this.mode === 'advanced' && this.custom) {
+        const height = `${this.custom.height || initHeight}px`
         let fontSize
         if (this.custom.font) {
-          fontSize = `${this.custom.font.size || 16}px`
+          fontSize = `${this.custom.font.size || initfontSize}px`
         }
         return {
           height,
@@ -138,6 +158,23 @@ export default {
         }
       } else {
         return null
+      }
+    },
+    arrowStyle () {
+      if (this.mode === 'advanced' && this.custom && this.custom.arrow) {
+        const borderLeftColor = this.custom.arrow.color || '#f89c2d'
+        return {
+          borderLeftColor
+        }
+      } else {
+        return null
+      }
+    },
+    arrowShow () {
+      if (this.custom && this.custom.arrow && typeof this.custom.arrow.show === 'boolean') {
+        return this.custom.arrow.show
+      } else {
+        return true
       }
     }
   }

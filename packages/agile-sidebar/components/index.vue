@@ -4,6 +4,7 @@ div.agile-sidebar(
   div.navbar-main.bg-img-normal.bg-img-contain(ref="sidebarBody", :style="bodyStyle")
     nav-item(
       v-for="(nItem, index) in setting",
+      :mode="mode",
       :cur-pos="curPos",
       :hover="hover",
       :index="index",
@@ -29,6 +30,20 @@ div.agile-sidebar(
 </template>
 
 <style lang="stylus" scoped> 
+// 默认样式
+$bodyWidth = 150px
+$bodyHeight = 300px
+$wrapRight = 42px
+$closeWidth = 22px
+$closeHeight = 100px
+$closeLeft = -22px
+$closeBg = #1E90FF
+$closeArrow = #ffffff
+$topWidth = 85px
+$topHeight = 30px
+$topBg = #00BFFF
+$topColor = #ffffff
+
 .navwrap-enter-active,.navwrap-leave-active
   transition opacity 0.05s
 .navwrap-enter,.navwrap-leave-active
@@ -44,27 +59,40 @@ div.agile-sidebar(
 
 .agile-sidebar
   position fixed
-  right 42px
+  right $wrapRight
   top 50%
-  z-index 1000
+  margin-top -($bodyWidth/2)
   transform translate(0, 0)
   transition all 0.35s
+  z-index 1000
   .navbar-main
     position relative
+    width $bodyWidth 
+    height  $bodyHeight
     box-sizing border-box
     font-size 18px
-    color #525252
+    background-color #1E90FF
       
     .to-top
       position absolute
       left 50%
-      bottom 0
+      bottom -$topHeight
+      width $topWidth 
+      height $topHeight
+      line-height $topHeight
+      color $topColor
+      background-color $topBg
       text-align center
       cursor pointer
       transform translateX(-50%)
     
   .close
     position absolute
+    left $closeLeft 
+    top 50%
+    width $closeWidth
+    height  $closeHeight 
+    background-color $closeBg
     transform translateY(-50%)
     transition all 0.35s
     cursor pointer
@@ -72,6 +100,7 @@ div.agile-sidebar(
       position absolute 
       left 50%
       top 50%
+      fill $closeArrow
       transform translate(-50%, -50%)
       transform translate3d(-50%, -50%, 0)
       transition all 0.15s
@@ -88,9 +117,19 @@ import ArrowSvg from './arrow-svg.vue'
 import { isVisible } from '../lib/util'
 import { moveScreenTo } from '../lib/scroll'
 
+// 默认尺寸和坐标
+const bodyWidth = 150
+const bodyHeight = 300
+const wrapRight = 42
+const closeWidth = 22
+
 export default {
   name: 'agile-sidebar',
   props: {
+    mode: {
+      type: String,
+      default: 'normal' // normal or advanced
+    },
     setting: {
       type: Array,
       required: true,
@@ -100,7 +139,6 @@ export default {
     },
     body: {
       type: Object,
-      required: true,
       default () {
         return {
           mode: 'color', // color or image
@@ -114,7 +152,6 @@ export default {
     },
     item: {
       type: Object,
-      required: true,
       default () {
         return {
           font: {
@@ -128,7 +165,6 @@ export default {
     },
     close: {
       type: Object,
-      required: true,
       default () {
         return {
           show: true,
@@ -153,13 +189,12 @@ export default {
     },
     toTop: {
       type: Object,
-      required: true,
       default () {
         return {
           show: true,
           width: 0,
           height: 0,
-          content: '',
+          content: 'to top',
           pos: {
             left: 0,
             bottom: 0
@@ -236,8 +271,8 @@ export default {
   },
   computed: {
     wrapStyle () {
-      if (this.body) {
-        const marginTop = `-${(this.body.height || 412)/2}px`
+      if (this.mode === 'advanced' && this.body) {
+        const marginTop = `-${(this.body.height || bodyHeight)/2}px`
         return {
           marginTop
         }
@@ -247,21 +282,21 @@ export default {
     },
     wrapTranslate () {
       let offsetX = 0
-      const bwidth = this.body && this.body.width ? this.body.width : 0
-      const cwidth = this.close && this.close.width ? this.close.width : 0
+      const bwidth = this.body && this.body.width ? this.body.width : bodyWidth
+      const cwidth = this.close && this.close.width ? this.close.width : closeWidth
       if (!this.posShow) {
-        offsetX = 42 + bwidth + cwidth
+        offsetX = wrapRight + bwidth + cwidth
       } else if (!this.userShow) {
-        offsetX = 42 + bwidth
+        offsetX = wrapRight + bwidth
       }
       return {
         transform: `translateX(${offsetX}px)`
       }
     },
     bodyStyle () {
-      if (this.body) {
-        const width = `${this.body.width || 162}px`
-        const height = `${this.body.height || 412}px`
+      if (this.mode === 'advanced' && this.body) {
+        const width = `${this.body.width || bodyWidth}px`
+        const height = `${this.body.height || bodyHeight}px`
         const paddingTop = `${this.body.paddingTop || 0}px`
 
         const obj = {
@@ -283,7 +318,7 @@ export default {
       }
     },
     closeStyle () {
-      if (this.close) {
+      if (this.mode === 'advanced' && this.close) {
         const width = `${this.close.width || 0}px`
         const height = `${this.close.height || 0}px`
         const left = `${this.close.left || 0}px`
@@ -308,7 +343,7 @@ export default {
       }
     },
     arrowStyle () {
-      if (this.close && this.close.arrow) {
+      if (this.mode === 'advanced' && this.close && this.close.arrow) {
         const width = `${this.close.arrow.width || 0}px`
         const height = `${this.close.arrow.height || 0}px`
         let backgroundImage = 'none'
@@ -329,7 +364,7 @@ export default {
       }
     },
     toTopStyle () {
-      if (this.toTop) {
+      if (this.mode === 'advanced' && this.toTop) {
         const width = `${this.toTop.width || 0}px`
         const height = `${this.toTop.height || 0}px`
         const left = this.toTop.pos && this.toTop.pos.left ? `${this.toTop.pos.left}px` : '50%'
