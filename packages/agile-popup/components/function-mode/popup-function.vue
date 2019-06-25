@@ -1,53 +1,75 @@
 <template lang="pug">
-transition(name="agilepop", appear, appear-active-class="agilepop-appear-active")
-  div.agile-popup-wrapper(v-if="show")
+transition(name="agilepopwrap")
+  div.agile-popup-wrapper(v-if="!destroy")
     
-    div.popup-mask-wrap(v-if="mask.show", :style="{backgroundColor: mask.color}")
+    transition(name="agilemask", appear, appear-active-class="agilemask-appear-active")
+      div.popup-mask-wrap(v-if="mask.show", :style="{backgroundColor: mask.color}")
     
-    div.popup-content-wrap(:style="{width: `${width}px`, background: background.type === 'color' ? background.color : 'none'}", ref="agilepop")
-      div.background-wrap(v-if="background.type === 'image' ")
-        div.background-top.bg-img-center(:style="{height: `${bgTop.height}px`, backgroundImage: `url(${bgTop.src})`}")
-        div.background-mid(:style="popMidFill")
-        div.background-bottom.bg-img-center(:style="{height: `${bgBottom.height}px`, backgroundImage: `url(${bgBottom.src})`}")
+    transition(name="agilepop", appear, appear-active-class="agilepop-appear-active")
+      div.popup-content-wrap(v-show="show", :style="{width: `${width}px`, background: background.type === 'color' ? background.color : 'none'}", ref="agilepop")
+        div.background-wrap(v-if="background.type === 'image' ")
+          div.background-top.bg-img-center(:style="{height: `${bgTop.height}px`, backgroundImage: `url(${bgTop.src})`}")
+          div.background-mid(:style="popMidFill")
+          div.background-bottom.bg-img-center(:style="{height: `${bgBottom.height}px`, backgroundImage: `url(${bgBottom.src})`}")
 
-      div.close-wrapper(
-        v-if="close.show", 
-        @click="closePop", @mouseenter="close.hover = true", @mouseleave="close.hover = false",
-        :style="outerStyle")
-        div.close-icon(
-          :style="innerStyle")
-          close-icon
-      
-      div.child-wrap
-        component(:is="curComponent", :inner-data="innerData", @closepopup="onClose")
+        div.close-wrapper(
+          v-if="close.show", 
+          @click="closePop", @mouseenter="close.hover = true", @mouseleave="close.hover = false",
+          :style="outerStyle")
+          div.close-icon(
+            :style="innerStyle")
+            close-icon
+        
+        div.child-wrap
+          component(:is="curComponent", :inner-data="innerData", @closepopup="onClose")
       
 </template>
 
-<style lang="stylus" scoped>
-// 弹出动画
-@keyframes agile-pop-bubble1
-  from
-    opacity 0
-    transform: translate3d(0, 100px, 0)
-  to
-    opacity 1
-    transform: translate3d(0, 0, 0)
-// 消失动画
-@keyframes agile-pop-bubble2
+<style lang="stylus">
+// 弹框整体消失动画
+@keyframes agile-wrap-disappear
   to
     opacity 0
 
-@keyframes agile-mask-show
+// 弹框弹出动画
+@keyframes agile-pop-appear
+  from
+    opacity 0
+    transform: translate3d(0, 50px, 0)
+  to
+    opacity 1
+    transform: translate3d(0, 0, 0)
+
+// 弹框消失动画
+@keyframes agile-pop-disappear
+  0%
+    opacity 1
+    transform scale(1)
+  100%
+    opacity 0
+    transform scale(0.9)
+
+// 蒙版出现动画
+@keyframes agile-mask-appear
   from
     opacity 0
   to
     opacity 0.5
 
+.agilepopwrap-leave-active
+  animation agile-wrap-disappear 0.15s linear both 1
 .agilepop-appear-active
-  animation agile-pop-bubble1 0.2s linear both 1
+  animation agile-pop-appear 0.25s ease-in-out both 1
+  animation-delay 0.15s
 .agilepop-leave-active
-  animation agile-pop-bubble2 0.15s linear both 1
+  animation agile-pop-disappear 0.25s ease-in-out both 1
+.agilemask-appear-active
+  animation agile-mask-appear 0.35s linear both 1
+  animation-delay 0.3s
 
+</style>
+
+<style lang="stylus" scoped>
 .agile-popup-wrapper
   position fixed
   top 0
@@ -67,8 +89,6 @@ transition(name="agilepop", appear, appear-active-class="agilepop-appear-active"
     height 100%
     background-color #000000
     opacity 0.5
-    animation agile-mask-show 0.25s linear both 1
-    animation-delay 0.35s
   .popup-content-wrap
     position relative
     text-align center
@@ -128,6 +148,8 @@ export default {
     return {
       // 控制弹框显示
       show: true,
+      // 销毁弹框
+      destroy: false,
       // 弹框宽度
       width: 433,
       // 背景蒙版设置
@@ -234,6 +256,15 @@ export default {
   components: {
     CloseIcon,
     DefaultInner
+  },
+  watch: {
+    show (val) {
+      if (!val) {
+        window.setTimeout(() => {
+          this.destroy = true
+        }, 350)
+      }
+    }
   }
 }
 </script>

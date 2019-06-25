@@ -61,7 +61,7 @@ $topColor = #ffffff
   position fixed
   right $wrapRight
   top 50%
-  margin-top -($bodyWidth/2)
+  margin-top -($bodyHeight/2)
   transform translate(0, 0)
   transition all 0.35s
   z-index 1000
