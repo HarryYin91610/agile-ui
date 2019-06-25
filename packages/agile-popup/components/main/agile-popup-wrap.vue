@@ -8,9 +8,9 @@ transition(name="agilepopwrap")
     transition(name="agilepop", appear, appear-active-class="agilepop-appear-active")
       div.popup-content-wrap(v-show="show", :style="{width: `${width}px`, background: background.type === 'color' ? background.color : 'none'}", ref="agilepop")
         div.background-wrap(v-if="background.type === 'image' ")
-          div.background-top.bg-img-center(:style="{height: `${bgTop.height}px`, backgroundImage: `url(${bgTop.src})`}")
+          div.background-top(:style="{height: `${bgTop.height}px`, backgroundImage: `url(${bgTop.src})`}")
           div.background-mid(:style="popMidFill")
-          div.background-bottom.bg-img-center(:style="{height: `${bgBottom.height}px`, backgroundImage: `url(${bgBottom.src})`}")
+          div.background-bottom(:style="{height: `${bgBottom.height}px`, backgroundImage: `url(${bgBottom.src})`}")
 
         div.close-wrapper(
           v-if="close.show", 
@@ -25,7 +25,7 @@ transition(name="agilepopwrap")
       
 </template>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 // 弹框整体消失动画
 @keyframes agile-wrap-disappear
   to
@@ -143,7 +143,7 @@ import CloseIcon from '../close-icon/index.vue'
 import Vue from 'vue'
 
 export default {
-  name: 'agile-popup-function',
+  name: 'agile-popup-wrap',
   data () {
     return {
       // 控制弹框显示

@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import AgilePopupFunc from './popup-function.vue'
+import AgilePopupWrap from './agile-popup-wrap.vue'
 
-AgilePopupFunc.creator = function (popSetting, parentNode = null) {
-  const AgilePopup = Vue.extend(AgilePopupFunc)
+AgilePopupWrap.creator = function (popSetting, parentNode = null) {
+  const AgilePopup = Vue.extend(AgilePopupWrap)
   const component = new AgilePopup({
     data: popSetting
   }).$mount()
@@ -14,4 +14,4 @@ AgilePopupFunc.creator = function (popSetting, parentNode = null) {
   return component
 }
 
-export default AgilePopupFunc
+export default AgilePopupWrap
