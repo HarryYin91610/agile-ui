@@ -1,4 +1,4 @@
-import AgileToast from './components/function-mode/index.js'
+import AgileToast from './components/main/index.js'
 
 export default AgileToast.install = (Vue) => {
   Vue.prototype.$agileToast = AgileToast.creator

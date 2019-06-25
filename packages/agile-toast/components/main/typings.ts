@@ -14,6 +14,8 @@ interface IToastSetting {
   userStyle?: object
 
   content?: string
+
+  offset?: object
 }
 
 export {
