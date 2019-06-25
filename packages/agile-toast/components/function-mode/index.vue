@@ -13,8 +13,20 @@ div.agile-func-toast(v-if="show", :class="curStatus", v-html="content", :style="
     opacity 0
     transform translate3d(0, -50%, 0)
 
+@keyframes toast-center-appear
+  from
+    opacity 0
+    transform translate3d(-50%, 50%, 0)
+
+@keyframes toast-center-disappear
+  to 
+    opacity 0
+    transform translate3d(-50%, -70%, 0)
+
 .agile-func-toast
   position fixed
+  left 0
+  top 0
   display block
   padding 10px 20px
   line-height 24px
@@ -30,6 +42,14 @@ div.agile-func-toast(v-if="show", :class="curStatus", v-html="content", :style="
   box-sizing border-box
   transition all 0.35s
   z-index 5
+  &.center
+    left 50%
+    top 50%
+    transform translate3d(-50%, -50%, 0)
+    &.show
+      animation toast-center-appear 0.35s ease-in-out 1 both
+    &.hidden
+      animation toast-center-disappear 0.35s ease-in-out 1 both
   &.show
     animation toast-appear 0.35s ease-in-out 1 both
   &.hidden
@@ -104,20 +124,25 @@ export default {
   computed: {
     curStatus () {
       const res = this.timeout > 0 ? 'show' : 'hidden'
-      return [`${res}`]
+      const center = this.center ? 'center' : ''
+      return [res, center]
     },
     defaultStyle () {
-      let pos = {
-        left: '0',
-        top: '0'
-      }
       if (this.parentNode) {
+        let pos = {
+          left: '0',
+          top: '0'
+        }
         pos = this.setToastPos()
+        return pos
       }
-      return pos
+      return {}
     },
     syncStyle () {
       return Object.assign(this.defaultStyle, this.userStyle)
+    },
+    center () {
+      return !Boolean(this.parentNode)
     }
   }
 }

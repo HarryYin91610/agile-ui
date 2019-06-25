@@ -17,6 +17,12 @@ export default {
         }
       })
     },
+    onDefaultClick ({ timeout = 3000, content = '这是点击后的消息提示' } = {}) {
+      this.$agileToast({
+        timeout,
+        content
+      })
+    },
     onLeftClick () {
       const parentNode = this.$refs.agileBtn4.$el
       this.$agileToast({
@@ -115,6 +121,27 @@ export default {
           x: parentNode.getBoundingClientRect().width + 5,
           y: 0
         }
+      })
+    }
+  }
+}
+</script>
+```
+:::
+
+### 默认定位显示
+
+:::demo 若不指定parentNode，则默认相对于浏览器居中显示。
+```html
+<agile-button content="点击我" @click.native="onDefaultClick" ref="agileBtn6"></agile-button>
+
+<script>
+export default {
+  methods: {
+    onClick ({ timeout = 3000, content = '这是点击后的消息提示' } = {}) {
+      this.$agileToast({
+        timeout,
+        content
       })
     }
   }
