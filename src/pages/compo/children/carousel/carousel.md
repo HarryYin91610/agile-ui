@@ -42,6 +42,18 @@ export default {}
 ```
 :::
 
+### 隐藏箭头
+
+:::demo 
+```html
+<agile-carousel :arrow="{show: false}" :width="400">
+  <agile-carousel-item v-for="item in [1, 2, 3, 4]" :key="item">
+    <div class="custom-inner" :class="[`color-${item}`]">demo-{{item}}</div>
+  </agile-carousel-item>
+</agile-carousel>
+```
+:::
+
 ### 禁用循环切换
 
 :::demo 通过`agile-carousel`的属性`loop`来设置是否可循环
@@ -77,6 +89,6 @@ export default {}
 | autoplay | 设置是否自动切换 | Boolean | — | true |
 | interval | 设置自动切换的时间间隔（ms） | Number | — | 5000 |
 | initIndex | 设置初始显示的卡片索引 | Number | — | 0 |
-| arrow | 设置轮播的左右箭头 | { size: Number, color: String, background: Object } | — | { size: 30, color: ”#ffffff“ } |
+| arrow | 设置轮播的左右箭头 | { show: Boolean, size: Number, color: String, background: Object } | — | { show: true, size: 30, color: ”#ffffff“ } |
 | arrow.background | 设置箭头背景 | { color: String, show: Boolean } | — | { color: ”#99a9bf“, show: true } |
 | indicator | 设置轮播的锚点 | { show: Boolean, bottom: Number, size: Number, height: Number, isRound: Boolean, normalColor: String, activeColor: String } | — | { show: true, bottom: 10, size: 10, height: 0, isRound: true, normalColor: ”#C1CDCD“, activeColor: ”#1E90FF“ }|

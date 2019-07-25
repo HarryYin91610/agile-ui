@@ -2,12 +2,14 @@
 div.agile-carousel(
   @mouseenter="isHover = true",
   @mouseleave="isHover = false",
+  :class="[type]"
   :style="wrapStyle")
   div.main-wrap
     div.content
       slot
     transition(name="arrow-left")
       div.arrow.left(
+        v-if="arrowShow",
         v-show="isHover && !arrowLeftDisabled",
         :style="arrowStyle",
         @click="throttledArrowClick(1)")
@@ -15,6 +17,7 @@ div.agile-carousel(
           arrow-svg
     transition(name="arrow-right")
       div.arrow.right(
+        v-if="arrowShow",
         v-show="isHover && !arrowRightDisabled",
         :style="arrowStyle",
         @click="throttledArrowClick(-1)")
@@ -99,6 +102,10 @@ import { throttle } from '../lib/util'
 export default {
   name: 'agile-carousel',
   props: {
+    type: {
+      type: String,
+      default: 'normal' // 显示模式：normal or card
+    },
     width: {
       type: Number,
       default: 350
@@ -123,6 +130,7 @@ export default {
       type: Object,
       default () {
         return {
+          show: true,
           size: 30,
           color: '',
           background: {
@@ -179,7 +187,7 @@ export default {
     },
     moveToPosition () {
       this.items.forEach((item, index) => {
-        item.show = true 
+        item.show = true
         item.ready = true
         item.adjustPosX(item.offsetX + this.direction * this.width)
       })
@@ -195,7 +203,7 @@ export default {
     jumpToPosition (oldIndex) {
       this.items.forEach((item, index) => {
         if (index === oldIndex || index === this.activeIndex) {
-          item.show = true 
+          item.show = true
           item.ready = true
           item.adjustPosX(item.offsetX + this.direction * this.width)
         }
@@ -221,17 +229,17 @@ export default {
       this.direction = index > this.activeIndex ? -1 : 1
       this.activeIndex = index
     },
-    pauseTimer() {
+    pauseTimer () {
       if (this.timer) {
         window.clearInterval(this.timer)
         this.timer = null
       }
     },
-    startTimer() {
+    startTimer () {
       if (this.interval <= 0 || !this.autoplay) { return }
       this.timer = window.setInterval(this.playSlides, this.interval)
     },
-    playSlides() {
+    playSlides () {
       this.trigger = 0
       this.toggleCardByArrow(-1)
     },
@@ -292,6 +300,13 @@ export default {
         width: `${width}px`
       }
     },
+    arrowShow () {
+      if (this.arrow && typeof this.arrow.show === 'boolean') {
+        return this.arrow.show
+      } else {
+        return true
+      }
+    },
     arrowStyle () {
       const size = this.arrow.size || 30
       const color = this.arrow.color || '#ffffff'
@@ -317,7 +332,7 @@ export default {
   },
   watch: {
     items (val) {
-      if (val.length > 0) { this.initActiveIndex() } 
+      if (val.length > 0) { this.initActiveIndex() }
     },
     activeIndex (val, oldVal) {
       if (this.trigger === 0) {
@@ -325,8 +340,9 @@ export default {
       } else {
         this.adjustItemPosition(oldVal)
       }
+      this.$emit('toggleindex', val)
     },
-    autoplay(val) {
+    autoplay (val) {
       val ? this.startTimer() : this.pauseTimer()
     },
     isHover (val) {

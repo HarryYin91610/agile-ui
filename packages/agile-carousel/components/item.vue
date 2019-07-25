@@ -29,7 +29,7 @@ export default {
     this.$parent && this.$parent.updateItems()
   },
   methods: {
-    translateItemByArrow(index, activeIndex, oldIndex) {
+    translateItemByArrow (index, activeIndex, oldIndex) {
       this.show = index === oldIndex
       this.ready = false
       const total = this.$parent.items.length
@@ -44,8 +44,8 @@ export default {
           }
         }
         if (oldIndex === 1) {
-          if (index === 1) { 
-            this.offsetX = -1 * unitWidth 
+          if (index === 1) {
+            this.offsetX = -1 * unitWidth
           } else {
             this.offsetX = -1 * direction * unitWidth
           }
