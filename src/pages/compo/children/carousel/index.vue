@@ -5,6 +5,8 @@ div.demo-carousel-wrap.p-relative
 
 <style lang="stylus">   
 .demo-carousel-wrap
+  .large-demo
+    padding 50px 20px
   .custom-inner
     width 100%
     height 200px
@@ -21,6 +23,8 @@ div.demo-carousel-wrap.p-relative
       background-color #FFB90F
     &.color-4
       background-color #00B2EE
+    &.card
+      height 400px
 	
 </style>
 

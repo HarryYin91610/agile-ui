@@ -5,7 +5,7 @@ div.agile-carousel(
   :class="[type]"
   :style="wrapStyle")
   div.main-wrap
-    div.content
+    div.content(:style="{transform: centerStyle}")
       slot
     transition(name="arrow-left")
       div.arrow.left(
@@ -46,9 +46,17 @@ div.agile-carousel(
 
 .agile-carousel 
   position relative
+  &.card
+    .content
+      position absolute
+      left 50%
+      top 50%
+      width 100%
+
   .main-wrap 
     position relative
-    width 100% 
+    width 100%
+    height 100%
     overflow hidden
     .arrow 
       position absolute
@@ -62,6 +70,7 @@ div.agile-carousel(
       background-color #99a9bf 
       fill #ffffff
       cursor pointer
+      z-index 2
       &.left
         left 10px
       &.right 
@@ -80,6 +89,7 @@ div.agile-carousel(
     text-align center
     transform translate(-50%, 0)
     transform translate3d(-50%, 0, 0)
+    z-index 2
     .indicator-item 
       display inline-block
       vertical-align top
@@ -104,11 +114,15 @@ export default {
   props: {
     type: {
       type: String,
-      default: 'normal' // 显示模式：normal or card
+      default: 'normal' // 显示模式：normal or card， card模式下锚点不可点击
     },
     width: {
       type: Number,
-      default: 350
+      default: 350 // 每张幻灯片的宽度
+    },
+    visibleRatio: {
+      type: Number,
+      default: 0.8 // 仅对card模式有效，可视区域比例(0~1)
     },
     loop: {
       type: Boolean,
@@ -162,7 +176,8 @@ export default {
       activeIndex: 0,
       direction: 0,
       items: [],
-      isHover: false
+      isHover: false,
+      moving: false
     }
   },
   methods: {
@@ -171,29 +186,43 @@ export default {
         this.activeIndex = this.initIndex
       }
     },
+    initItemPosition () {
+      this.items.forEach((item, index) => {
+        item.translateItemByArrow(index, this.activeIndex)
+      })
+    },
     updateItems () {
       this.items = this.$children.filter(child => child.$options.name === 'agile-carousel-item')
     },
     resetItemPosition (oldIndex) {
       this.items.forEach((item, index) => {
-        item.translateItemByArrow(index, this.activeIndex, oldIndex)
+        item.$data.isActive = this.activeIndex === index
+        item.translateItemByArrow(index, oldIndex)
       })
       window.setTimeout(() => {
         if (this.direction === 0) {
           this.direction = this.activeIndex - oldIndex > 0 ? -1 : 0
         }
         this.moveToPosition()
-      }, 50)
+      }, 20)
     },
     moveToPosition () {
       this.items.forEach((item, index) => {
         item.show = true
         item.ready = true
         item.adjustPosX(item.offsetX + this.direction * this.width)
+        const ts = this.type === 'card' ? 20 : 350
+        window.setTimeout(() => {
+          item.translateItemByArrow(index, this.activeIndex)
+        }, ts)
       })
+      window.setTimeout(() => {
+        this.moving = false
+      }, 350)
     },
     adjustItemPosition (oldIndex) {
       this.items.forEach((item, index) => {
+        item.$data.isActive = this.activeIndex === index
         item.translateItemByIndicator(index, this.activeIndex, oldIndex)
       })
       window.setTimeout(() => {
@@ -207,10 +236,18 @@ export default {
           item.ready = true
           item.adjustPosX(item.offsetX + this.direction * this.width)
         }
+        window.setTimeout(() => {
+          item.translateItemByArrow(index, this.activeIndex)
+        }, 350)
       })
+      window.setTimeout(() => {
+        this.moving = false
+      }, 350)
     },
     toggleCardByArrow (direction) {
+      if (this.moving) { return }
       this.trigger = 0
+      this.moving = true
       const total = this.items.length
       if (total <= 1) { return }
       this.direction = direction
@@ -224,7 +261,8 @@ export default {
       }
     },
     toggleCardByIndicator (index) {
-      if (index === -1 || index === this.activeIndex) { return }
+      if (this.moving || index === -1 || index === this.activeIndex) { return }
+      this.moving = true
       this.trigger = 1
       this.direction = index > this.activeIndex ? -1 : 1
       this.activeIndex = index
@@ -240,7 +278,6 @@ export default {
       this.timer = window.setInterval(this.playSlides, this.interval)
     },
     playSlides () {
-      this.trigger = 0
       this.toggleCardByArrow(-1)
     },
     getIndicatorColor (active) {
@@ -256,12 +293,14 @@ export default {
       this.toggleCardByArrow(direction)
     })
     this.throttledIndicatorHover = throttle(50, index => {
+      if (this.type === 'card') { return }
       this.toggleCardByIndicator(index)
     })
   },
   mounted () {
     this.$nextTick(() => {
       this.initActiveIndex()
+      this.initItemPosition()
       this.startTimer()
     })
   },
@@ -275,6 +314,14 @@ export default {
       } else {
         return true
       }
+    },
+    visibleWidth () {
+      const ratio = this.visibleRatio >= 0 && this.visibleRatio <= 1 ? this.visibleRatio : 1
+      return this.width * 3 * ratio
+    },
+    centerStyle () {
+      const transform = this.type === 'card' ? `translate(${-1 * this.width / 2}px, -50%)` : `none`
+      return transform
     },
     indicatorStyle () {
       const size = this.indicator && this.indicator.size ? this.indicator.size : 10
@@ -295,9 +342,11 @@ export default {
       }
     },
     wrapStyle () {
-      const width = this.width || 350
+      const width = this.type === 'card' ? this.visibleWidth : this.width
+      const height = this.type === 'card' ? 500 : 'auto'
       return {
-        width: `${width}px`
+        width: `${width}px`,
+        height: `${height}px`
       }
     },
     arrowShow () {
