@@ -81,6 +81,23 @@ export default {}
 ```
 :::
 
+### 卡片化显示
+
+:::demo
+```html
+<div class="large-demo">
+  <agile-carousel 
+    type="card"
+    :init-index="2"
+    :width="240">
+    <agile-carousel-item v-for="item in [1,2,3,4]" :key="item"> 
+      <div class="custom-inner card" :class="[`color-${item}`]">demo-{{item}}</div>
+    </agile-carousel-item>
+  </agile-carousel>
+</div>
+```
+:::
+
 ### agileCarousel Options
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------------- |--------------------------------  |-------- |
