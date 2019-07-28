@@ -1,32 +1,20 @@
 <template lang="pug">
 div.agile-carousel-item(
-  :class="[{active: isActive, 'pre-active': !isActive && isPreActive,  hidden: !show || (!isVisible && mode === 'card'), animating: ready}, mode]", 
-  :style="{ width: `${width}px`, transform: transformStyle }")
+  :class="[{active: isActive, 'pre-active': !isActive && isPreActive,  hidden: !show || (!isVisible && mode === 'card'), animating: ready}, mode]",
+  :style="{ width: getSize(width), transform: transformStyle }",
+  @click="onClick")
   slot
+  transition(name="item-mask")
+    div.mask(v-if="platform === 'h5' && !isActive")
 </template>
 
-<style lang="stylus" scoped>
-.agile-carousel-item
-  position relative
-  width 100%
-  flex none
-  &.card
-    transition all 0.35s
-    z-index 0
-    &.pre-active
-      z-index 1
-    &.active
-      z-index 2
-  &.animating
-    transition transform 0.35s
-    transition-delay 0.05s
-    // z-index -1
-  &.hidden
-    visibility hidden 
+<style src="./style/item-pc.styl" lang="stylus" scoped></style>
 
-</style>
+<style src="./style/item-h5.styl" lang="stylus" scoped></style>
 
 <script>
+import { pxToRem } from '../lib/util'
+
 export default {
   name: 'agile-carousel-item',
   data () {
@@ -44,6 +32,9 @@ export default {
     this.$parent && this.$parent.updateItems()
   },
   methods: {
+    getSize (size) {
+      return this.platform === 'h5' ? `${pxToRem(size)}rem` : `${size}px`
+    },
     translateItemByArrow (index, oldIndex) {
       this.ready = false
       const total = this.$parent.$data.items.length
@@ -103,17 +94,25 @@ export default {
       }
     },
     adjustPosX (offsetX) {
-      let transform = offsetX ? `translateX(${offsetX}px)` : ''
+      let transform = offsetX ? `translateX(${this.getSize(offsetX)})` : ''
       if (this.mode === 'card') {
-        const scale = this.isActive ? 1.25 : 1
+        const scale = this.isActive ? 1.18 : 1
         transform += ` scale(${scale})`
       }
       this.transformStyle = transform
+    },
+    onClick () {
+      if (this.isActive) {
+        this.$parent.$emit('clickcard')
+      }
     }
   },
   computed: {
     mode () {
       return this.$parent.$props.type
+    },
+    platform () {
+      return this.$parent.$props.platform
     },
     width () {
       return this.$parent.$props.width

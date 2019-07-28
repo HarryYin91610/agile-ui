@@ -1,0 +1,71 @@
+.agile-carousel.pc
+  position relative
+  margin 0 auto
+
+  .arrow-left-enter-active, .arrow-left-leave-active,
+  .arrow-right-enter-active, .arrow-right-leave-active 
+    transition all 0.35s
+  .arrow-left-enter, .arrow-left-leave-active 
+    transform translate3d(-10px, -50%, 0) !important
+    opacity 0
+  .arrow-right-enter, .arrow-right-leave-active 
+    transform translate3d(10px, -50%, 0) !important
+    opacity 0
+
+  &.card
+    .content
+      position absolute
+      left 50%
+      top 50%
+      width 100%
+
+  .main-wrap 
+    position relative
+    width 100%
+    height 100%
+    overflow hidden
+    .arrow 
+      position absolute
+      top 50%
+      width 30px
+      height 30px
+      padding 5px
+      transform translateY(-50%)
+      transform translate3d(0, -50%, 0)
+      box-sizing border-box
+      background-color #99a9bf 
+      fill #ffffff
+      cursor pointer
+      z-index 2
+      &.left
+        left 10px
+      &.right 
+        right 10px
+        .arrow-svg-wrap
+          transform scaleX(-1)
+    .content
+      width 100%
+      display flex 
+      justify-content flex-start
+
+  .indicators
+    position absolute
+    left 50% 
+    bottom 0
+    text-align center
+    transform translate(-50%, 0)
+    transform translate3d(-50%, 0, 0)
+    z-index 2
+    .indicator-item 
+      display inline-block
+      vertical-align top
+      margin-right 10px
+      border-radius 50%
+      background-color #99a9bf
+      cursor pointer
+      transition transform 0.15s
+      &:last-child 
+        margin-right 0
+      &.active 
+        transform scale(1.2)
+        background-color red

@@ -1,0 +1,32 @@
+.agile-carousel.h5
+  .agile-carousel-item
+    position relative
+    width 100%
+    flex none
+    .mask
+      position absolute
+      left 0
+      top 0
+      width 100%
+      height 100%
+      background-color rgba(0,0,0,0.5)
+    &.card
+      transition all 0.35s
+      z-index 0
+      &.pre-active
+        z-index 1
+      &.active
+        z-index 2
+
+    &.animating
+      transition transform 0.35s
+      transition-delay 0.05s
+    &.hidden
+      visibility hidden
+
+    .item-mask-enter-active, .item-mask-leave-active,
+      transition all 0.15s
+    .item-mask-enter, .item-mask-leave-active 
+      opacity 0
+
+    

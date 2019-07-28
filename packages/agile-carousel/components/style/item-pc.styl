@@ -1,0 +1,17 @@
+.agile-carousel.pc
+  .agile-carousel-item
+    position relative
+    width 100%
+    flex none
+    &.card
+      transition all 0.35s
+      z-index 0
+      &.pre-active
+        z-index 1
+      &.active
+        z-index 2
+    &.animating
+      transition transform 0.35s
+      transition-delay 0.05s
+    &.hidden
+      visibility hidden

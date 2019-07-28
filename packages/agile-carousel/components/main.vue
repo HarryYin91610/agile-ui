@@ -2,7 +2,7 @@
 div.agile-carousel(
   @mouseenter="isHover = true",
   @mouseleave="isHover = false",
-  :class="[type]"
+  :class="[platform, type]"
   :style="wrapStyle")
   div.main-wrap
     div.content(:style="{transform: centerStyle}")
@@ -10,111 +10,47 @@ div.agile-carousel(
     transition(name="arrow-left")
       div.arrow.left(
         v-if="arrowShow",
-        v-show="isHover && !arrowLeftDisabled",
+        v-show="platform === 'h5' || (isHover && !arrowLeftDisabled)",
         :style="arrowStyle",
         @click="throttledArrowClick(1)")
-        div.arrow-svg-wrap
+        div.arrow-svg-wrap(v-if="platform === 'pc'")
           arrow-svg
     transition(name="arrow-right")
       div.arrow.right(
         v-if="arrowShow",
-        v-show="isHover && !arrowRightDisabled",
+        v-show="platform === 'h5' || (isHover && !arrowRightDisabled)",
         :style="arrowStyle",
         @click="throttledArrowClick(-1)")
-        div.arrow-svg-wrap
+        div.arrow-svg-wrap(v-if="platform === 'pc'")
           arrow-svg
   div.indicators(v-if="indicatorShow" :style="indicatorWrapStyle")
     div.indicator-item(
-      v-for="(item, index) in items", 
+      v-for="(item, index) in items",
       :class="{active: index === activeIndex}",
-      :style="[indicatorStyle, getIndicatorColor(index === activeIndex)]", 
+      :style="[indicatorStyle, getIndicatorColor(index === activeIndex)]",
       @mouseenter="throttledIndicatorHover(index)",
       @mouseleave="throttledIndicatorHover(-1)",
       :key="`indicator-${index}`")
 </template>
 
-<style lang="stylus" scoped>
-.arrow-left-enter-active, .arrow-left-leave-active,
-.arrow-right-enter-active, .arrow-right-leave-active 
-  transition all 0.35s
-.arrow-left-enter, .arrow-left-leave-active 
-  transform translate3d(-10px, -50%, 0) !important
-  opacity 0
-.arrow-right-enter, .arrow-right-leave-active 
-  transform translate3d(10px, -50%, 0) !important
-  opacity 0
+<style src="./style/main-pc.styl" lang="stylus" scoped></style>
 
-.agile-carousel 
-  position relative
-  &.card
-    .content
-      position absolute
-      left 50%
-      top 50%
-      width 100%
-
-  .main-wrap 
-    position relative
-    width 100%
-    height 100%
-    overflow hidden
-    .arrow 
-      position absolute
-      top 50%
-      width 30px
-      height 30px
-      padding 5px
-      transform translateY(-50%)
-      transform translate3d(0, -50%, 0)
-      box-sizing border-box
-      background-color #99a9bf 
-      fill #ffffff
-      cursor pointer
-      z-index 2
-      &.left
-        left 10px
-      &.right 
-        right 10px
-        .arrow-svg-wrap
-          transform scaleX(-1)
-    .content
-      width 100%
-      display flex 
-      justify-content flex-start
-
-  .indicators
-    position absolute
-    left 50% 
-    bottom 0
-    text-align center
-    transform translate(-50%, 0)
-    transform translate3d(-50%, 0, 0)
-    z-index 2
-    .indicator-item 
-      display inline-block
-      vertical-align top
-      margin-right 10px
-      border-radius 50%
-      background-color #99a9bf
-      cursor pointer
-      transition transform 0.15s
-      &:last-child 
-        margin-right 0
-      &.active 
-        transform scale(1.2)
-        background-color red
-</style>
+<style src="./style/main-h5.styl" lang="stylus" scoped></style>
 
 <script>
 import ArrowSvg from './arrow-svg.vue'
-import { throttle } from '../lib/util'
+import { throttle, pxToRem } from '../lib/util'
 
 export default {
   name: 'agile-carousel',
   props: {
+    platform: {
+      type: String,
+      default: 'pc' // pc or h5
+    },
     type: {
       type: String,
-      default: 'normal' // 显示模式：normal or card， card模式下锚点不可点击
+      default: 'normal' // 显示模式：normal or card，card模式下锚点不可点击
     },
     width: {
       type: Number,
@@ -122,7 +58,7 @@ export default {
     },
     visibleRatio: {
       type: Number,
-      default: 0.8 // 仅对card模式有效，可视区域比例(0~1)
+      default: 1 // 仅对card模式有效，可视区域比例(0~1)
     },
     loop: {
       type: Boolean,
@@ -130,7 +66,7 @@ export default {
     },
     autoplay: {
       type: Boolean,
-      default: true
+      default: false
     },
     interval: {
       type: Number,
@@ -160,8 +96,8 @@ export default {
         return {
           show: true,
           bottom: 0,
-          size: 0,
-          height: 0,
+          size: 10,
+          height: 6,
           isRound: true,
           normalColor: '',
           activeColor: ''
@@ -173,7 +109,7 @@ export default {
     return {
       timer: null,
       trigger: 0, // 0 --> arrow, 1 --> indicator
-      activeIndex: 0,
+      activeIndex: -1,
       direction: 0,
       items: [],
       isHover: false,
@@ -320,33 +256,34 @@ export default {
       return this.width * 3 * ratio
     },
     centerStyle () {
-      const transform = this.type === 'card' ? `translate(${-1 * this.width / 2}px, -50%)` : `none`
+      const offsetX = this.platform === 'h5' ? `${pxToRem(-1 * this.width / 2)}rem` : `${-1 * this.width / 2}px`
+      const transform = this.type === 'card' ? `translate(${offsetX}, -50%)` : `none`
       return transform
     },
     indicatorStyle () {
-      const size = this.indicator && this.indicator.size ? this.indicator.size : 10
-      const height = this.indicator && this.indicator.height ? this.indicator.height : 0
+      const size = this.indicator && this.indicator.size ? this.indicator.size : 85
+      const height = this.indicator && this.indicator.height ? this.indicator.height : 6
       const normalColor = this.indicator && this.indicator.normalColor ? this.indicator.normalColor : '#C1CDCD'
       const isRound = typeof this.indicator.isRound === 'boolean' ? this.indicator.isRound : true
       return {
-        width: `${size}px`,
-        height: `${height || size}px`,
+        width: this.platform === 'h5' ? `${pxToRem(size)}rem` : `${size}px`,
+        height: this.platform === 'h5' ? `${pxToRem(isRound ? size : height)}rem` : `${isRound ? size : height}px`,
         borderRadius: isRound ? '50%' : 0,
         backgroundColor: this.activeIndex
       }
     },
     indicatorWrapStyle () {
-      const bottom = this.indicator.bottom || 10
+      const bottom = this.indicator.bottom || 0
       return {
-        bottom: `${bottom}px`
+        bottom: this.platform === 'h5' ? `${pxToRem(bottom)}rem` : `${bottom}px`
       }
     },
     wrapStyle () {
       const width = this.type === 'card' ? this.visibleWidth : this.width
-      const height = this.type === 'card' ? 500 : 'auto'
+      const height = this.type === 'card' ? 600 : 'auto'
       return {
-        width: `${width}px`,
-        height: `${height}px`
+        width: this.platform === 'h5' ? `${pxToRem(width)}rem` : `${width}px`,
+        height: this.platform === 'h5' ? `${pxToRem(height)}rem` : `${height}px`
       }
     },
     arrowShow () {
@@ -365,11 +302,15 @@ export default {
         showBackground = typeof this.arrow.background.show === 'boolean' ? this.arrow.background.show : true
         background = this.arrow.background.color ? this.arrow.background.color : background
       }
-      return {
-        width: `${size}px`,
-        height: `${size}px`,
-        fill: color,
-        backgroundColor: showBackground ? background : 'transparent'
+      if (this.platform === 'h5') {
+        return null
+      } else {
+        return {
+          width: `${size}px`,
+          height: `${size}px`,
+          fill: color,
+          backgroundColor: showBackground ? background : 'transparent'
+        }
       }
     },
     arrowLeftDisabled () {

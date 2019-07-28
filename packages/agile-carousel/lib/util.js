@@ -10,3 +10,7 @@ export const throttle = (ts, callback) => {
     }, ts)
   }
 }
+
+export const pxToRem = (origin) => {
+  return origin / 75
+}
